@@ -1,8 +1,5 @@
-package by.pirog;
+package by.pirog.cli;
 
-import by.pirog.cli.ArgumentParser;
-import by.pirog.cli.CliException;
-import by.pirog.cli.CliOptions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
