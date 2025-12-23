@@ -18,6 +18,8 @@ public class ArgumentParserTest {
         assertFalse(cliOptions.isShortStats());
         assertFalse(cliOptions.isAppend());
         assertFalse(cliOptions.isAppend());
+        assertFalse(cliOptions.isAsync());
+        assertFalse(cliOptions.isTimeStatistics());
         assertEquals("", cliOptions.getPrefix());
     }
 
@@ -31,6 +33,8 @@ public class ArgumentParserTest {
         assertFalse(cliOptions.isShortStats());
         assertFalse(cliOptions.isAppend());
         assertFalse(cliOptions.isAppend());
+        assertFalse(cliOptions.isAsync());
+        assertFalse(cliOptions.isTimeStatistics());
         assertEquals(".", cliOptions.getOutputDir().toString());
     }
 
@@ -76,6 +80,8 @@ public class ArgumentParserTest {
         assertTrue(options.isAppend());
         assertFalse(options.isShortStats());
         assertFalse(options.isFullStats());
+        assertFalse(options.isAsync());
+        assertFalse(options.isTimeStatistics());
         assertEquals("", options.getPrefix());
         assertEquals(Paths.get("."), options.getOutputDir());
     }
@@ -89,6 +95,8 @@ public class ArgumentParserTest {
         assertFalse(options.isAppend());
         assertTrue(options.isShortStats());
         assertFalse(options.isFullStats());
+        assertFalse(options.isAsync());
+        assertFalse(options.isTimeStatistics());
         assertEquals("", options.getPrefix());
         assertEquals(Paths.get("."), options.getOutputDir());
     }
@@ -101,6 +109,36 @@ public class ArgumentParserTest {
         assertFalse(options.isAppend());
         assertFalse(options.isShortStats());
         assertTrue(options.isFullStats());
+        assertFalse(options.isAsync());
+        assertFalse(options.isTimeStatistics());
+        assertEquals("", options.getPrefix());
+        assertEquals(Paths.get("."), options.getOutputDir());
+    }
+
+    @Test
+    void testAsyncOption() throws CliException {
+        String[] args = {"--async"};
+        CliOptions options = ArgumentParser.parse(args);
+
+        assertFalse(options.isAppend());
+        assertFalse(options.isShortStats());
+        assertFalse(options.isFullStats());
+        assertTrue(options.isAsync());
+        assertFalse(options.isTimeStatistics());
+        assertEquals("", options.getPrefix());
+        assertEquals(Paths.get("."), options.getOutputDir());
+    }
+
+    @Test
+    void testTimeStatisticsOption() throws CliException {
+        String[] args = {"--time"};
+        CliOptions options = ArgumentParser.parse(args);
+
+        assertFalse(options.isAppend());
+        assertFalse(options.isShortStats());
+        assertFalse(options.isFullStats());
+        assertFalse(options.isAsync());
+        assertTrue(options.isTimeStatistics());
         assertEquals("", options.getPrefix());
         assertEquals(Paths.get("."), options.getOutputDir());
     }

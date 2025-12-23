@@ -5,11 +5,15 @@ import by.pirog.cli.ArgumentParser;
 import by.pirog.cli.CliException;
 import by.pirog.cli.CliOptions;
 import by.pirog.cli.CliOptionsValidator;
+import by.pirog.output.AsyncFileOutputManager;
 import by.pirog.output.FileOutputManager;
 import by.pirog.output.OutputManager;
 import by.pirog.processor.FileProcessor;
+import by.pirog.statistics.ExecutionTimer;
 import by.pirog.statistics.NumberStatistics;
 import by.pirog.statistics.StringStatistics;
+
+import java.io.IOException;
 
 
 public class App 
@@ -21,27 +25,37 @@ public class App
             CliOptionsValidator.validate(options);
 
             OutputManager outputManager = new FileOutputManager(options);
-            LineClassifier classifier = new LineClassifier();
+
+            final OutputManager om = options.isAsync()
+                    ? new AsyncFileOutputManager(outputManager)
+                    : outputManager;
 
             NumberStatistics numberStatistics = new NumberStatistics();
             StringStatistics stringStatistics = new StringStatistics();
 
             FileProcessor fileProcessor = new FileProcessor();
-            fileProcessor.process(
-                    options.getInputFiles(),
-                    classifier,
-                    outputManager,
-                    numberStatistics,
-                    stringStatistics
-            );
+
+            ExecutionTimer timer = new ExecutionTimer(options.isTimeStatistics());
+            timer.execute(() -> {
+                fileProcessor.process(
+                        options.getInputFiles(),
+                        new LineClassifier(),
+                        om,
+                        numberStatistics,
+                        stringStatistics
+                );
+                try{
+                    om.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error closing output manager");
+                }
+            });
 
             if (options.isShortStats() || options.isFullStats()) {
                 boolean full =  options.isFullStats();
                 numberStatistics.print(full);
                 stringStatistics.print(full);
             }
-
-            outputManager.close();
         } catch (CliException e){
             System.err.println("Ошибка: " + e.getMessage());
         } catch (Exception e){

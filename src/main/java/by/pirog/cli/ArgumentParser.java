@@ -38,6 +38,14 @@ public class ArgumentParser {
                     options.setPrefix(args[i]);
                     i++;
                     break;
+                case "--async":
+                    options.setAsync(true);
+                    i++;
+                    break;
+                case "--time":
+                    options.setTimeStatistics(true);
+                    i++;
+                    break;
                 default:
                     if (args[i].startsWith("-")) {
                         throw new CliException("Неизвестная опция: "  + args[i]);

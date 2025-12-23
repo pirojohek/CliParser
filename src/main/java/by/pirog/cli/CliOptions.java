@@ -11,6 +11,9 @@ public class CliOptions {
     private boolean shortStats;
     private boolean fullStats;
 
+    private boolean async;
+    private boolean timeStatistics;
+
     private Path outputDir = Paths.get(".");
     private String prefix = "";
 
@@ -21,6 +24,21 @@ public class CliOptions {
     }
     public void setAppend(boolean append) {
         this.append = append;
+    }
+
+    public void setAsync(boolean async) {
+        this.async = async;
+    }
+
+    public boolean isAsync() {
+        return async;
+    }
+
+    public boolean isTimeStatistics() {
+        return timeStatistics;
+    }
+    public void setTimeStatistics(boolean timeStatistics) {
+        this.timeStatistics = timeStatistics;
     }
 
     public boolean isShortStats() {
