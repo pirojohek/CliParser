@@ -9,11 +9,14 @@ import by.pirog.output.AsyncFileOutputManager;
 import by.pirog.output.FileOutputManager;
 import by.pirog.output.OutputManager;
 import by.pirog.processor.FileProcessor;
+import by.pirog.processor.FileScanner;
 import by.pirog.statistics.ExecutionTimer;
 import by.pirog.statistics.NumberStatistics;
 import by.pirog.statistics.StringStatistics;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 
 
 public class App 
@@ -34,11 +37,12 @@ public class App
             StringStatistics stringStatistics = new StringStatistics();
 
             FileProcessor fileProcessor = new FileProcessor();
+            List<Path> inputFiles = FileScanner.resolve(options.getInputFiles());
 
             ExecutionTimer timer = new ExecutionTimer(options.isTimeStatistics());
             timer.execute(() -> {
                 fileProcessor.process(
-                        options.getInputFiles(),
+                        inputFiles,
                         new LineClassifier(),
                         om,
                         numberStatistics,
