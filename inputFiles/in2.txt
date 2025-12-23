@@ -1,0 +1,7 @@
+Lorem
+ipsum
+1.5E3
+100500
+-2.71828
+TestString
+LongNumber1234567890123456789
