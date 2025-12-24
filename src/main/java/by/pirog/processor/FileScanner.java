@@ -1,5 +1,7 @@
 package by.pirog.processor;
 
+import by.pirog.cli.CliException;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -25,5 +27,14 @@ public class FileScanner {
             }
         }
         return result;
+    }
+
+    public static List<Path> resolveAndValidate(List<Path> inputFiles) throws CliException {
+        List<Path> resolvedFiles = resolve(inputFiles);
+        if (resolvedFiles.isEmpty()) {
+            throw new CliException("Не найдено ни одного входного файла для обработки. " +
+                    "Проверьте, что указанные пути существуют и содержат файлы.");
+        }
+        return resolvedFiles;
     }
 }

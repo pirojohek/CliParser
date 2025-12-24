@@ -39,11 +39,14 @@ public class App
             NumberStatistics numberStatistics = new NumberStatistics();
             StringStatistics stringStatistics = new StringStatistics();
 
+            List<Path> inputFiles = FileScanner.resolveAndValidate(options.getInputFiles());
+
             FileProcessor fileProcessor = new FileProcessor();
 
             ExecutionTimer timer = new ExecutionTimer(options.isTimeStatistics());
+
             timer.execute(() -> {
-                List<Path> inputFiles = FileScanner.resolve(options.getInputFiles());
+
 
                 fileProcessor.process(
                         inputFiles,
