@@ -8,10 +8,13 @@ import by.pirog.cli.CliOptionsValidator;
 import by.pirog.output.AsyncFileOutputManager;
 import by.pirog.output.FileOutputManager;
 import by.pirog.output.OutputManager;
+import by.pirog.outputStrategy.StatisticsOutputStrategy;
+import by.pirog.outputStrategy.StatisticsOutputStrategyFactory;
 import by.pirog.processor.FileProcessor;
 import by.pirog.processor.FileScanner;
 import by.pirog.statistics.ExecutionTimer;
 import by.pirog.statistics.NumberStatistics;
+import by.pirog.statistics.StatisticsContainer;
 import by.pirog.statistics.StringStatistics;
 
 import java.io.IOException;
@@ -37,10 +40,11 @@ public class App
             StringStatistics stringStatistics = new StringStatistics();
 
             FileProcessor fileProcessor = new FileProcessor();
-            List<Path> inputFiles = FileScanner.resolve(options.getInputFiles());
 
             ExecutionTimer timer = new ExecutionTimer(options.isTimeStatistics());
             timer.execute(() -> {
+                List<Path> inputFiles = FileScanner.resolve(options.getInputFiles());
+
                 fileProcessor.process(
                         inputFiles,
                         new LineClassifier(),
@@ -55,11 +59,18 @@ public class App
                 }
             });
 
-            if (options.isShortStats() || options.isFullStats()) {
-                boolean full =  options.isFullStats();
-                numberStatistics.print(full);
-                stringStatistics.print(full);
+            List<StatisticsOutputStrategy> categories =
+                    StatisticsOutputStrategyFactory.getStatisticsOutputStrategies(options);
+
+            StatisticsContainer container = new StatisticsContainer(
+                    numberStatistics,
+                    stringStatistics,
+                    options.isFullStats()
+            );
+            for (StatisticsOutputStrategy category : categories){
+                category.output(container);
             }
+
         } catch (CliException e){
             System.err.println("Ошибка: " + e.getMessage());
         } catch (Exception e){

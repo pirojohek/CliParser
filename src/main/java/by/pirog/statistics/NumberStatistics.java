@@ -1,6 +1,6 @@
 package by.pirog.statistics;
 
-public class NumberStatistics implements Statistics {
+public class NumberStatistics{
 
     private long count = 0;
     private Double min = null;
@@ -19,23 +19,6 @@ public class NumberStatistics implements Statistics {
         }
     }
 
-
-    @Override
-    public void print(boolean full) {
-        if (count == 0) {
-            return;
-        }
-
-        System.out.println("Numbers:");
-        System.out.println("  count = " + count);
-
-        if (full) {
-            System.out.println("  min = " + min);
-            System.out.println("  max = " + max);
-            System.out.println("  sum = " + sum);
-            System.out.println("  avg = " + (sum / count));
-        }
-    }
 
     public long getCount() {
         return count;

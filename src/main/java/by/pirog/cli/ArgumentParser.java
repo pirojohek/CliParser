@@ -46,6 +46,10 @@ public class ArgumentParser {
                     options.setTimeStatistics(true);
                     i++;
                     break;
+                case "--json-stats":
+                    options.setJsonStats(true);
+                    i++;
+                    break;
                 default:
                     if (args[i].startsWith("-")) {
                         throw new CliException("Неизвестная опция: "  + args[i]);

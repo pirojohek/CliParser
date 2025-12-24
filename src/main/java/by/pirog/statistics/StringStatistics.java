@@ -1,6 +1,6 @@
 package by.pirog.statistics;
 
-public class StringStatistics implements Statistics {
+public class StringStatistics {
 
     private long count = 0;
     private Integer minLength = null;
@@ -16,21 +16,6 @@ public class StringStatistics implements Statistics {
         }
         if (maxLength == null || length > maxLength) {
             maxLength = length;
-        }
-    }
-
-    @Override
-    public void print(boolean full) {
-        if (count == 0) {
-            return;
-        }
-
-        System.out.println("Strings:");
-        System.out.println("  count = " + count);
-
-        if (full) {
-            System.out.println("  minLength = " + minLength);
-            System.out.println("  maxLength = " + maxLength);
         }
     }
 

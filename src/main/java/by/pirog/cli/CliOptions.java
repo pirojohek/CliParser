@@ -13,11 +13,14 @@ public class CliOptions {
 
     private boolean async;
     private boolean timeStatistics;
+    private boolean jsonStats;
 
     private Path outputDir = Paths.get(".");
     private String prefix = "";
 
     private final List<Path> inputFiles = new ArrayList<>();
+
+    // Getters and Setters
 
     public boolean isAppend() {
         return append;
@@ -71,5 +74,13 @@ public class CliOptions {
     }
     public List<Path> getInputFiles() {
         return inputFiles;
+    }
+
+    public boolean isJsonStats() {
+        return jsonStats;
+    }
+
+    public void setJsonStats(boolean jsonStats) {
+        this.jsonStats = jsonStats;
     }
 }
