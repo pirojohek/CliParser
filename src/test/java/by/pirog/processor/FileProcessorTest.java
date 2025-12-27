@@ -6,6 +6,7 @@ import by.pirog.output.DataType;
 import by.pirog.output.FileOutputManager;
 import by.pirog.output.OutputManager;
 import by.pirog.statistics.NumberStatistics;
+import by.pirog.statistics.ProcessingStatistics;
 import by.pirog.statistics.StringStatistics;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -30,6 +31,8 @@ public class FileProcessorTest {
         OutputManager outputManager = mock(FileOutputManager.class);
         NumberStatistics numberStatistics = mock(NumberStatistics.class);
         StringStatistics stringStatistics = mock(StringStatistics.class);
+        ProcessingStatistics processingStatistics = mock(ProcessingStatistics.class);
+
 
         when(classifier.classify("123")).thenReturn(DataType.INTEGER);
         when(classifier.classify("3.14")).thenReturn(DataType.FLOAT);
@@ -37,7 +40,8 @@ public class FileProcessorTest {
 
         FileProcessor processor = new FileProcessor();
 
-        processor.process(List.of(file), classifier, outputManager, numberStatistics, stringStatistics);
+        processor.process(List.of(file), classifier, outputManager, numberStatistics, stringStatistics,
+                processingStatistics);
 
         verify(outputManager).write(DataType.INTEGER, "123");
         verify(outputManager).write(DataType.FLOAT, "3.14");

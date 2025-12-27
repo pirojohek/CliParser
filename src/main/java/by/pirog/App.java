@@ -12,10 +12,7 @@ import by.pirog.outputStrategy.StatisticsOutputStrategy;
 import by.pirog.outputStrategy.StatisticsOutputStrategyFactory;
 import by.pirog.processor.FileProcessor;
 import by.pirog.processor.FileScanner;
-import by.pirog.statistics.ExecutionTimer;
-import by.pirog.statistics.NumberStatistics;
-import by.pirog.statistics.StatisticsContainer;
-import by.pirog.statistics.StringStatistics;
+import by.pirog.statistics.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -38,6 +35,7 @@ public class App
 
             NumberStatistics numberStatistics = new NumberStatistics();
             StringStatistics stringStatistics = new StringStatistics();
+            ProcessingStatistics processingStatistics = new ProcessingStatistics();
 
             List<Path> inputFiles = FileScanner.resolveAndValidate(options.getInputFiles());
 
@@ -47,20 +45,20 @@ public class App
 
             timer.execute(() -> {
 
-
                 fileProcessor.process(
                         inputFiles,
                         new LineClassifier(),
                         om,
                         numberStatistics,
-                        stringStatistics
+                        stringStatistics,
+                        processingStatistics
                 );
                 try{
                     om.close();
                 } catch (IOException e) {
                     throw new RuntimeException("Error closing output manager");
                 }
-            });
+            }, processingStatistics);
 
             List<StatisticsOutputStrategy> categories =
                     StatisticsOutputStrategyFactory.getStatisticsOutputStrategies(options);
@@ -68,6 +66,7 @@ public class App
             StatisticsContainer container = new StatisticsContainer(
                     numberStatistics,
                     stringStatistics,
+                    processingStatistics,
                     options.isFullStats()
             );
             for (StatisticsOutputStrategy category : categories){

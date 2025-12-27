@@ -8,14 +8,15 @@ public class ExecutionTimer {
         this.printTime = printTime;
     }
 
-    public void execute(Runnable task){
-        long start = 0;
-        if (printTime) start = System.nanoTime();
+    public void execute(Runnable task, ProcessingStatistics statistics){
+        long start = System.nanoTime();
         task.run();
+        long end = System.nanoTime();
+        long ms = (end - start) / 1_000_000;
 
-        if (printTime){
-            long end = System.nanoTime();
-            long ms = (end - start) / 1_000_000;
+        statistics.setExecutionTime(ms);
+
+        if (printTime) {
             System.out.println("Время выполнения: " + ms + " мс");
         }
     }

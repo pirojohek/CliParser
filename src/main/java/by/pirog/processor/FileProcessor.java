@@ -5,6 +5,7 @@ import by.pirog.classifier.LineClassifier;
 import by.pirog.output.DataType;
 import by.pirog.output.OutputManager;
 import by.pirog.statistics.NumberStatistics;
+import by.pirog.statistics.ProcessingStatistics;
 import by.pirog.statistics.StringStatistics;
 
 import java.io.BufferedReader;
@@ -20,10 +21,12 @@ public class FileProcessor {
             LineClassifier classifier,
             OutputManager output,
             NumberStatistics numberStatistics,
-            StringStatistics stringStatistics
+            StringStatistics stringStatistics,
+            ProcessingStatistics  processingStatistics
     ) {
         for (Path path : inputFiles) {
-            processSingleFile(path, classifier, output, numberStatistics, stringStatistics);
+            processSingleFile(path, classifier, output, numberStatistics, stringStatistics, processingStatistics);
+            processingStatistics.incrementFilesProcessed();
         }
     }
 
@@ -32,15 +35,17 @@ public class FileProcessor {
             LineClassifier classifier,
             OutputManager output,
             NumberStatistics numberStatistics,
-            StringStatistics stringStatistics) {
+            StringStatistics stringStatistics,
+            ProcessingStatistics  processingStatistics) {
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             String line;
             while ((line = reader.readLine()) != null) {
-                processLine(line, classifier, output, numberStatistics, stringStatistics);
+                processLine(line, classifier, output, numberStatistics, stringStatistics, processingStatistics);
             }
-
+            processingStatistics.incrementFilesSucceeded();
         } catch (IOException e) {
             System.err.println("Ошибка чтения файла " + path + ": " + e.getMessage());
+            processingStatistics.incrementFilesFailed();
         }
     }
 
@@ -48,10 +53,13 @@ public class FileProcessor {
                              LineClassifier classifier,
                              OutputManager output,
                              NumberStatistics numberStatistics,
-                             StringStatistics stringStatistics) {
+                             StringStatistics stringStatistics,
+                             ProcessingStatistics  processingStatistics) {
         if (line.isEmpty()) {
             return;
         }
+
+        processingStatistics.addLine();
 
         try{
             DataType type = classifier.classify(line);
@@ -70,8 +78,11 @@ public class FileProcessor {
                     numberStatistics.accept(Float.parseFloat(line));
                 }
             }
+
+            processingStatistics.incrementValidLines();
         } catch (Exception e) {
             System.err.println("Ошибка обработки строки: \"" + line + "\" — " + e.getMessage());
+            processingStatistics.incrementInvalidLines();
         }
     }
 }

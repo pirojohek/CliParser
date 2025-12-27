@@ -1,6 +1,7 @@
 package by.pirog.outputStrategy;
 
 import by.pirog.converter.NumberStatisticsConverter;
+import by.pirog.converter.ProcessingStatisticsConverter;
 import by.pirog.converter.StringStatisticsConverter;
 import by.pirog.json.JsonStatistics;
 import by.pirog.json.NumberStatisticsDto;
@@ -40,6 +41,7 @@ public class JsonStatisticsOutput implements StatisticsOutputStrategy {
         JsonStatistics jsonStatistics = new JsonStatistics();
         jsonStatistics.setNumbers(NumberStatisticsConverter.toDto(statistics.getNumberStatistics()));
         jsonStatistics.setStrings(StringStatisticsConverter.toDto(statistics.getStringStatistics()));
+        jsonStatistics.setProcessing(ProcessingStatisticsConverter.toDto(statistics.getProcessingStatistics()));
 
         return jsonStatistics;
     }

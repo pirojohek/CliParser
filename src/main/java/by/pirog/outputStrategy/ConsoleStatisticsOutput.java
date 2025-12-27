@@ -1,6 +1,7 @@
 package by.pirog.outputStrategy;
 
 import by.pirog.statistics.NumberStatistics;
+import by.pirog.statistics.ProcessingStatistics;
 import by.pirog.statistics.StatisticsContainer;
 import by.pirog.statistics.StringStatistics;
 
@@ -11,8 +12,23 @@ public class ConsoleStatisticsOutput implements StatisticsOutputStrategy {
     public void output(StatisticsContainer statistics) {
         System.out.println("=== Статистика ===");
 
+        printProcessingStatistics(statistics.getProcessingStatistics());
         printNumberStatistics(statistics.getNumberStatistics(), statistics.isFullStats());
         printStringStatistics(statistics.getStringStatistics(), statistics.isFullStats());
+    }
+
+    private void printProcessingStatistics(ProcessingStatistics stats) {
+        System.out.println("\nОбщая статистика обработки:");
+        System.out.println("  Файлов обработано: " + stats.getFilesProcessed());
+        System.out.println("  Файлов успешно: " + stats.getFilesSucceeded());
+        System.out.println("  Файлов с ошибками: " + stats.getFilesFailed());
+        System.out.println("  Всего строк: " + stats.getTotalLines());
+        System.out.println("  Валидных строк: " + stats.getValidLines());
+        System.out.println("  Невалидных строк: " + stats.getInvalidLines());
+
+        if (stats.getExecutionTimeMs() > 0) {
+            System.out.println("  Время выполнения: " + stats.getExecutionTimeMs() + " мс");
+        }
     }
 
     private void printNumberStatistics(NumberStatistics stats, boolean full) {
