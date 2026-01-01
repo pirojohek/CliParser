@@ -26,7 +26,7 @@ public final class CliOptionsValidator {
             throw new ValidationException("Не указаны входные файлы");
         }
 
-        if (options.getThreadCount() != null && options.isAsync()) {
+        if (options.getThreadCount() != null && !options.isAsync()) {
             throw new ValidationException("Опция --threads доступна только для синхронной обработки");
         }
 
