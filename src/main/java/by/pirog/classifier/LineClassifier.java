@@ -11,7 +11,7 @@ public class LineClassifier {
 
         String s = line.trim();
         if (s.isEmpty()){
-            return new ClassificationResult(DataType.STRING, null);
+            return new ClassificationResult(DataType.STRING, line);
         }
 
         boolean hasDot = s.contains(".");
@@ -34,7 +34,7 @@ public class LineClassifier {
         } catch (NumberFormatException ignored) {
         }
 
-        return new ClassificationResult(DataType.STRING, null);
+        return new ClassificationResult(DataType.STRING, line);
     }
 
 }
