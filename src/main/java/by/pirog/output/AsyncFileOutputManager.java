@@ -40,7 +40,7 @@ public class AsyncFileOutputManager implements OutputManager {
             }
         } catch (Exception e) {
             writerException = e;
-            System.err.println("❌ Ошибка в потоке записи: " + e.getMessage());
+            System.err.println("Ошибка в потоке записи: " + e.getMessage());
         }
     }
 
@@ -68,7 +68,7 @@ public class AsyncFileOutputManager implements OutputManager {
         try {
             if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
-                System.err.println("⚠ Принудительное завершение потока записи (таймаут 30 сек)");
+                System.err.println("Принудительное завершение потока записи (таймаут 30 сек)");
             }
         } catch (InterruptedException e) {
             executor.shutdownNow();

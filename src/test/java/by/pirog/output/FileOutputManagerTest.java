@@ -12,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OutputManagerTest {
+public class FileOutputManagerTest {
 
     @TempDir
     Path tempDir;
