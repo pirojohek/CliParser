@@ -3,16 +3,15 @@ package by.pirog.classifier;
 import by.pirog.output.DataType;
 
 public class LineClassifier {
-
-    public DataType classify(String line){
+    public ClassificationResult classifyWithValue(String line){
 
         if (line == null){
-            return DataType.STRING;
+            return new ClassificationResult(DataType.STRING, null);
         }
 
         String s = line.trim();
         if (s.isEmpty()){
-            return DataType.STRING;
+            return new ClassificationResult(DataType.STRING, null);
         }
 
         boolean hasDot = s.contains(".");
@@ -20,9 +19,9 @@ public class LineClassifier {
 
         if (!hasDot && !hasExp){
             try{
-                Long.parseLong(s);
-                return DataType.INTEGER;
-            } catch (NumberFormatException e){
+                Long value = Long.parseLong(s);
+                return new ClassificationResult(DataType.INTEGER, value);
+            } catch (NumberFormatException ignored){
 
             }
         }
@@ -30,12 +29,12 @@ public class LineClassifier {
         try {
             double d = Double.parseDouble(s);
             if (!Double.isNaN(d) && !Double.isInfinite(d)) {
-                return DataType.FLOAT;
+                return new ClassificationResult(DataType.FLOAT, d);
             }
         } catch (NumberFormatException ignored) {
         }
 
-        return DataType.STRING;
+        return new ClassificationResult(DataType.STRING, null);
     }
 
 }

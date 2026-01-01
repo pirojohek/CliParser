@@ -1,5 +1,7 @@
 package by.pirog.statistics;
 
+import by.pirog.statistics.processingStatistics.ProcessingStatistics;
+
 public class ExecutionTimer {
 
     private final boolean printTime;
@@ -14,7 +16,7 @@ public class ExecutionTimer {
         long end = System.nanoTime();
         long ms = (end - start) / 1_000_000;
 
-        statistics.setExecutionTime(ms);
+        statistics.setExecutionTimeMs(ms);
 
         if (printTime) {
             System.out.println("Время выполнения: " + ms + " мс");

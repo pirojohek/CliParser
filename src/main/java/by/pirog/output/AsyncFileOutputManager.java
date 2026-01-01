@@ -1,51 +1,86 @@
 package by.pirog.output;
 
+import by.pirog.exception.OutputException;
+
 import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.*;
 
 public class AsyncFileOutputManager implements OutputManager {
 
     private final OutputManager delegate;
-    private final BlockingQueue<WriteTask> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<WriteTask> queue = new LinkedBlockingQueue<>(10000);
 
-    private final Thread writeThread;
     private volatile boolean running = true;
+    private volatile Exception writerException = null;
+
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public AsyncFileOutputManager(OutputManager delegate) {
         this.delegate = delegate;
-
-        writeThread = new Thread(this::runWriter, "writer-thread");
-        writeThread.start();
+        executor.execute(this::runWriter);
     }
 
     private void runWriter() {
-        try{
-            while (running || !queue.isEmpty()){
-                WriteTask task = queue.poll(100, TimeUnit.MILLISECONDS);
-                if (task != null){
-                    delegate.write(task.type(), task.value());
+        List<WriteTask> batch = new ArrayList<>(100);
+        try {
+            while (running || !queue.isEmpty()) {
+                WriteTask task = queue.poll(10, TimeUnit.MILLISECONDS);
+
+                if (task != null) {
+                    batch.add(task);
+                    queue.drainTo(batch, 99);
+                    for (WriteTask t : batch) {
+                        delegate.write(t.type(), t.value());
+                    }
+
+                    batch.clear();
                 }
             }
         } catch (Exception e) {
-            throw new RuntimeException("Writer thread failed", e);
+            writerException = e;
+            System.err.println("❌ Ошибка в потоке записи: " + e.getMessage());
         }
     }
 
     @Override
     public void write(DataType type, String value) throws IOException {
-        queue.offer(new WriteTask(type, value));
+        // Проверяем, не упал ли поток записи
+        if (writerException != null) {
+            throw new IOException("Writer thread failed: " + writerException.getMessage(), writerException);
+        }
+
+        try {
+            if (!queue.offer(new WriteTask(type, value), 5, TimeUnit.SECONDS)) {
+                throw new IOException("Очередь записи переполнена (превышен таймаут 5 сек)");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IOException("Прервано при добавлении в очередь записи", e);
+        }
     }
 
     @Override
     public void close() throws IOException {
         running = false;
-        try{
-            writeThread.join();
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+                System.err.println("⚠ Принудительное завершение потока записи (таймаут 30 сек)");
+            }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+            throw new IOException("Прервано при закрытии потока записи", e);
         }
+
+        // Пробрасываем ошибку из потока записи, если она была
+        if (writerException != null) {
+            throw new IOException("Поток записи завершился с ошибкой", writerException);
+        }
+
         delegate.close();
     }
 }

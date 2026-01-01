@@ -4,13 +4,10 @@ import by.pirog.converter.NumberStatisticsConverter;
 import by.pirog.converter.ProcessingStatisticsConverter;
 import by.pirog.converter.StringStatisticsConverter;
 import by.pirog.json.JsonStatistics;
-import by.pirog.json.NumberStatisticsDto;
-import by.pirog.statistics.NumberStatistics;
 import by.pirog.statistics.StatisticsContainer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
-import java.nio.file.Path;
 
 public class JsonStatisticsOutput implements StatisticsOutputStrategy {
 

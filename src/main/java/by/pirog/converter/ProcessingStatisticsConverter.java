@@ -1,7 +1,7 @@
 package by.pirog.converter;
 
 import by.pirog.json.ProcessingStatisticsDto;
-import by.pirog.statistics.ProcessingStatistics;
+import by.pirog.statistics.processingStatistics.ProcessingStatistics;
 
 public class ProcessingStatisticsConverter {
 

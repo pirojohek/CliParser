@@ -4,9 +4,10 @@ import by.pirog.cli.CliOptions;
 import by.pirog.output.AsyncFileOutputManager;
 import by.pirog.output.FileOutputManager;
 import by.pirog.output.OutputManager;
-import by.pirog.statistics.NumberStatistics;
-import by.pirog.statistics.ProcessingStatistics;
-import by.pirog.statistics.StringStatistics;
+import by.pirog.statistics.StatisticsFactory;
+import by.pirog.statistics.numberStatistics.NumberStatistics;
+import by.pirog.statistics.processingStatistics.ProcessingStatistics;
+import by.pirog.statistics.stringStatistics.StringStatistics;
 
 public class ApplicationContext {
     private final CliOptions options;
@@ -17,9 +18,9 @@ public class ApplicationContext {
 
     public ApplicationContext(CliOptions options) {
         this.options = options;
-        this.numberStatistics = new NumberStatistics();
-        this.stringStatistics = new StringStatistics();
-        this.processingStatistics = new ProcessingStatistics();
+        this.numberStatistics = StatisticsFactory.createNumberStatistics(options.isAsync());
+        this.stringStatistics = StatisticsFactory.createStringStatistics(options.isAsync());
+        this.processingStatistics = StatisticsFactory.createProcessingStatistics(options.isAsync());
         this.outputManager = createOutputManager();
     }
 

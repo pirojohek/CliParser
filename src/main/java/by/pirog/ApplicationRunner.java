@@ -1,11 +1,14 @@
 package by.pirog;
 
 import by.pirog.classifier.LineClassifier;
-import by.pirog.cli.CliException;
+import by.pirog.exception.FileProcessingException;
+import by.pirog.exception.OutputException;
+import by.pirog.exception.ValidationException;
 import by.pirog.output.OutputManager;
 import by.pirog.outputStrategy.StatisticsOutputStrategy;
 import by.pirog.outputStrategy.StatisticsOutputStrategyFactory;
 import by.pirog.processor.FileProcessor;
+import by.pirog.processor.FileProcessorFactory;
 import by.pirog.processor.FileScanner;
 import by.pirog.statistics.ExecutionTimer;
 import by.pirog.statistics.StatisticsContainer;
@@ -21,39 +24,51 @@ public class ApplicationRunner {
         this.context = context;
     }
 
-    public void run() throws CliException {
+    public void run() throws ValidationException, FileProcessingException, OutputException {
         List<Path> inputFiles = resolveInputFiles();
         processFiles(inputFiles);
         outputStatistics();
     }
 
-    private List<Path> resolveInputFiles() throws CliException {
+    private List<Path> resolveInputFiles() throws ValidationException {
         return FileScanner.resolveAndValidate(context.getOptions().getInputFiles());
     }
 
-    private void processFiles(List<Path> inputFiles) {
-        FileProcessor fileProcessor = new FileProcessor();
+    private void processFiles(List<Path> inputFiles) throws FileProcessingException, OutputException {
+        FileProcessor fileProcessor = FileProcessorFactory.createFileProcessor(context.getOptions());
         ExecutionTimer timer = new ExecutionTimer(context.getOptions().isTimeStatistics());
         OutputManager outputManager = context.getOutputManager();
 
-        timer.execute(() -> {
-            fileProcessor.process(
-                    inputFiles,
-                    new LineClassifier(),
-                    outputManager,
-                    context.getNumberStatistics(),
-                    context.getStringStatistics(),
-                    context.getProcessingStatistics()
-            );
+        try {
+            timer.execute(() -> {
+                try {
+                    fileProcessor.process(
+                            inputFiles,
+                            new LineClassifier(),
+                            outputManager,
+                            context.getNumberStatistics(),
+                            context.getStringStatistics(),
+                            context.getProcessingStatistics()
+                    );
+                } catch (FileProcessingException e) {
+                    throw new RuntimeException(e);
+                }
+            }, context.getProcessingStatistics());
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof FileProcessingException) {
+                throw (FileProcessingException) e.getCause();
+            }
+            throw e;
+        } finally {
             closeOutputManager(outputManager);
-        }, context.getProcessingStatistics());
+        }
     }
 
-    private void closeOutputManager(OutputManager outputManager) {
+    private void closeOutputManager(OutputManager outputManager) throws OutputException {
         try {
             outputManager.close();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка закрытия OutputManager", e);
+            throw new OutputException("Ошибка закрытия OutputManager", e, null, null);
         }
     }
 
@@ -65,7 +80,8 @@ public class ApplicationRunner {
                 context.getNumberStatistics(),
                 context.getStringStatistics(),
                 context.getProcessingStatistics(),
-                context.getOptions().isFullStats()
+                context.getOptions().isFullStats(),
+                context.getOptions().isFullCustomStats()
         );
 
         for (StatisticsOutputStrategy strategy : strategies) {

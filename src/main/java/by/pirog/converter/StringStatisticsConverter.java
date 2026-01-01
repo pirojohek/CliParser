@@ -1,7 +1,7 @@
 package by.pirog.converter;
 
 import by.pirog.json.StringStatisticsDto;
-import by.pirog.statistics.StringStatistics;
+import by.pirog.statistics.stringStatistics.StringStatistics;
 
 public class StringStatisticsConverter {
 
@@ -14,7 +14,8 @@ public class StringStatisticsConverter {
         dto.setCount(statistics.getCount());
         dto.setMinLength(statistics.getMinLength());
         dto.setMaxLength(statistics.getMaxLength());
-
+        dto.setMaxLengthString(statistics.getMaxLengthString());
+        dto.setMinLengthString(statistics.getMinLengthString());
         return dto;
     }
 }

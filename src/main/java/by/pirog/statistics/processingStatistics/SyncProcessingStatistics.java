@@ -1,6 +1,6 @@
-package by.pirog.statistics;
+package by.pirog.statistics.processingStatistics;
 
-public class ProcessingStatistics {
+public class SyncProcessingStatistics implements ProcessingStatistics {
     private int filesProcessed = 0;
 
     private int filesSucceeded = 0;
@@ -14,7 +14,7 @@ public class ProcessingStatistics {
         this.filesProcessed++;
     }
 
-    public void addLine() {
+    public void incrementLines() {
         this.totalLines++;
     }
 
@@ -29,7 +29,7 @@ public class ProcessingStatistics {
     public void incrementInvalidLines() {
         this.invalidLines++;
     }
-    public void setExecutionTime(long executionTimeMs) {
+    public void setExecutionTimeMs(long executionTimeMs) {
         this.executionTimeMs = executionTimeMs;
     }
 

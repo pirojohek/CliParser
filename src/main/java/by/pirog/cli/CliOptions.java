@@ -8,10 +8,14 @@ import java.util.List;
 public class CliOptions {
 
     private boolean append;
+
     private boolean shortStats;
     private boolean fullStats;
+    private boolean fullCustomStats;
 
     private boolean async;
+    private Integer threadCount = null;
+
     private boolean timeStatistics;
     private boolean jsonStats;
 
@@ -82,5 +86,22 @@ public class CliOptions {
 
     public void setJsonStats(boolean jsonStats) {
         this.jsonStats = jsonStats;
+    }
+
+    public Integer getThreadCount() {
+        return threadCount;
+    }
+
+    public void setThreadCount(int threadCount) {
+        this.threadCount = threadCount;
+    }
+
+
+    public boolean isFullCustomStats() {
+        return fullCustomStats;
+    }
+
+    public void setFullCustomStats(boolean fullCustomStats) {
+        this.fullCustomStats = fullCustomStats;
     }
 }

@@ -1,7 +1,6 @@
-package by.pirog.statistics;
+package by.pirog.statistics.numberStatistics;
 
-public class NumberStatistics{
-
+public class SyncNumberStatistics implements NumberStatistics {
     private long count = 0;
     private Double min = null;
     private Double max = null;

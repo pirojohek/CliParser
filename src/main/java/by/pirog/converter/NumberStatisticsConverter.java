@@ -1,7 +1,7 @@
 package by.pirog.converter;
 
 import by.pirog.json.NumberStatisticsDto;
-import by.pirog.statistics.NumberStatistics;
+import by.pirog.statistics.numberStatistics.NumberStatistics;
 
 public class NumberStatisticsConverter {
     public static NumberStatisticsDto toDto(NumberStatistics statistics) {

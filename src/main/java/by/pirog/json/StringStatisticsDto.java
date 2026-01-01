@@ -7,15 +7,49 @@ public class StringStatisticsDto {
     private Long count;
     private Integer minLength;
     private Integer maxLength;
+    private String minLengthString;
+    private String maxLengthString;
 
-    public StringStatisticsDto() {}
+    public void setMaxLengthString(String maxLengthString) {
+        this.maxLengthString = maxLengthString;
+    }
 
-    public Long getCount() { return count; }
-    public void setCount(Long count) { this.count = count; }
+    public StringStatisticsDto() {
+    }
 
-    public Integer getMinLength() { return minLength; }
-    public void setMinLength(Integer minLength) { this.minLength = minLength; }
+    public Long getCount() {
+        return count;
+    }
 
-    public Integer getMaxLength() { return maxLength; }
-    public void setMaxLength(Integer maxLength) { this.maxLength = maxLength; }
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
+    public Integer getMinLength() {
+        return minLength;
+    }
+
+    public void setMinLength(Integer minLength) {
+        this.minLength = minLength;
+    }
+
+    public Integer getMaxLength() {
+        return maxLength;
+    }
+
+    public void setMaxLength(Integer maxLength) {
+        this.maxLength = maxLength;
+    }
+
+    public String getMinLengthString() {
+        return minLengthString;
+    }
+
+    public void setMinLengthString(String minLengthString) {
+        this.minLengthString = minLengthString;
+    }
+
+    public String getMaxLengthString() {
+        return maxLengthString;
+    }
 }
