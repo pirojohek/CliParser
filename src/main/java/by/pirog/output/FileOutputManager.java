@@ -6,7 +6,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -19,17 +18,12 @@ public class FileOutputManager implements OutputManager {
     private final Map<DataType, BufferedWriter> writers =
             new EnumMap<>(DataType.class);
 
-    private final Map<DataType, Object> locks = new EnumMap<>(DataType.class);
-
     public FileOutputManager(CliOptions options) {
         this.outputDir = options.getOutputDir() != null ?
                 options.getOutputDir() : Paths.get(".");
         this.prefix = options.getPrefix();
         this.append = options.isAppend();
 
-        for (DataType type : DataType.values()) {
-            locks.put(type, new Object());
-        }
     }
 
     @Override
