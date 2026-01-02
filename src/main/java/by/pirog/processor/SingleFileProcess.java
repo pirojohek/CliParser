@@ -30,7 +30,7 @@ public class SingleFileProcess {
             }
             processingStatistics.incrementFilesSucceeded();
         } catch (IOException e) {
-            System.err.println("⚠ Ошибка чтения файла " + path + ": " + e.getMessage());
+            System.err.println("Ошибка чтения файла " + path + ": " + e.getMessage());
             processingStatistics.incrementFilesFailed();
         }
     }
@@ -70,11 +70,11 @@ public class SingleFileProcess {
 
             processingStatistics.incrementValidLines();
         } catch (IOException e) {
-            System.err.println(String.format("⚠ Ошибка записи [%s:%d]: %s",
+            System.err.println(String.format("Ошибка записи [%s:%d]: %s",
                 filePath.getFileName(), lineNumber, e.getMessage()));
             processingStatistics.incrementInvalidLines();
         } catch (Exception e) {
-            System.err.println(String.format("⚠ Ошибка обработки [%s:%d]: \"%s\" — %s",
+            System.err.println(String.format("Ошибка обработки [%s:%d]: \"%s\" — %s",
                 filePath.getFileName(), lineNumber, truncate(line, 50), e.getMessage()));
             processingStatistics.incrementInvalidLines();
         }
