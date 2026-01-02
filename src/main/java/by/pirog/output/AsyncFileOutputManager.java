@@ -38,15 +38,17 @@ public class AsyncFileOutputManager implements OutputManager {
                     batch.clear();
                 }
             }
+
         } catch (Exception e) {
             writerException = e;
             System.err.println("Ошибка в потоке записи: " + e.getMessage());
+            running = false;
         }
     }
 
     @Override
     public void write(DataType type, String value) throws IOException {
-        // Проверяем, не упал ли поток записи
+
         if (writerException != null) {
             throw new IOException("Writer thread failed: " + writerException.getMessage(), writerException);
         }
@@ -65,22 +67,23 @@ public class AsyncFileOutputManager implements OutputManager {
     public void close() throws IOException {
         running = false;
         executor.shutdown();
-        try {
-            if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+        try{
+            try {
+                if (!executor.awaitTermination(30, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                    System.err.println("Принудительное завершение потока записи (таймаут 30 сек)");
+                }
+            } catch (InterruptedException e) {
                 executor.shutdownNow();
-                System.err.println("Принудительное завершение потока записи (таймаут 30 сек)");
+                Thread.currentThread().interrupt();
+                throw new IOException("Прервано при закрытии потока записи", e);
             }
-        } catch (InterruptedException e) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-            throw new IOException("Прервано при закрытии потока записи", e);
-        }
 
-        // Пробрасываем ошибку из потока записи, если она была
-        if (writerException != null) {
-            throw new IOException("Поток записи завершился с ошибкой", writerException);
+            if (writerException != null) {
+                throw new IOException("Поток записи завершился с ошибкой", writerException);
+            }
+        } finally {
+            delegate.close();
         }
-
-        delegate.close();
     }
 }

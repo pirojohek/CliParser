@@ -22,7 +22,7 @@ public class FileScanner {
                 try(DirectoryStream<Path> stream = Files.newDirectoryStream(currentPath)){
                     stream.forEach(queue::add);
                 } catch (IOException e){
-                    String errorMsg = String.format("⚠ Невозможно прочитать директорию %s: %s",
+                    String errorMsg = String.format("Невозможно прочитать директорию %s: %s",
                         currentPath, e.getMessage());
                     System.err.println(errorMsg);
                     errors.add(errorMsg);
@@ -31,19 +31,19 @@ public class FileScanner {
                 if (Files.isReadable(currentPath)) {
                     result.add(currentPath);
                 } else {
-                    String errorMsg = String.format("⚠ Файл недоступен для чтения: %s", currentPath);
+                    String errorMsg = String.format("Файл недоступен для чтения: %s", currentPath);
                     System.err.println(errorMsg);
                     errors.add(errorMsg);
                 }
             } else if (Files.exists(currentPath)) {
-                String errorMsg = String.format("⚠ Путь не является файлом или директорией: %s", currentPath);
+                String errorMsg = String.format("Путь не является файлом или директорией: %s", currentPath);
                 System.err.println(errorMsg);
                 errors.add(errorMsg);
             }
         }
 
         if (!errors.isEmpty()) {
-            System.err.println(String.format("\n⚠ Обнаружено проблем при сканировании: %d", errors.size()));
+            System.err.println(String.format("\nОбнаружено проблем при сканировании: %d", errors.size()));
         }
 
         return result;
@@ -63,7 +63,7 @@ public class FileScanner {
             );
         }
 
-        System.out.println(String.format("✓ Найдено файлов для обработки: %d", resolvedFiles.size()));
+        System.out.println(String.format("Найдено файлов для обработки: %d", resolvedFiles.size()));
 
         return resolvedFiles;
     }
