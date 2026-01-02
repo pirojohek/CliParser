@@ -1,5 +1,7 @@
 package by.pirog.statistics;
 
+import by.pirog.statistics.numberStatistics.NumberStatistics;
+import by.pirog.statistics.numberStatistics.SyncNumberStatistics;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +10,7 @@ public class NumberStatisticsTest {
 
     @Test
     void accept_integers_calculatesStatsCorrectly() {
-        NumberStatistics stats = new NumberStatistics();
+        NumberStatistics stats = new SyncNumberStatistics();
 
         stats.accept(10L);
         stats.accept(20L);
@@ -23,7 +25,7 @@ public class NumberStatisticsTest {
 
     @Test
     void accept_floats_calculatesStatsCorrectly() {
-        NumberStatistics stats = new NumberStatistics();
+        NumberStatistics stats = new SyncNumberStatistics();
         stats.accept(1.5f);
         stats.accept(2.5f);
 
